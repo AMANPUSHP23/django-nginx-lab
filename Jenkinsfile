@@ -5,28 +5,33 @@ agent any
 
 stages {
 
-    stage('Git Checkout') {
+    stage('Checkout') {
         steps {
             git branch: 'main',
-            url: 'https://github.com/AMANPUSHP23/django-nginx-lab.git'
+                url: 'https://github.com/AMANPUSHP23/django-nginx-lab.git'
         }
     }
 
-    stage('Docker Compose Down') {
+    stage('Deploy to App Server') {
         steps {
-            sh 'docker-compose down || true'
-        }
-    }
 
-    stage('Docker Compose Build') {
-        steps {
-            sh 'docker-compose build'
-        }
-    }
+            sshagent(['app-server-ssh']) {
 
-    stage('Docker Compose Up') {
-        steps {
-            sh 'docker-compose up -d'
+                sh '''
+                ssh -o StrictHostKeyChecking=no ubuntu@18.233.160.163 "
+
+                cd ~/django-nginx-lab &&
+
+                git pull origin main &&
+
+                docker compose down &&
+
+                docker compose up -d --build
+
+                "
+                '''
+
+            }
         }
     }
 
