@@ -47,7 +47,7 @@ stages {
         steps {
             sshagent(['app-server-ssh']) {
                 sh '''
-                ssh -o StrictHostKeyChecking=no ubuntu@34.207.194.124"
+                ssh -o StrictHostKeyChecking=no ubuntu@34.207.194.124 "
                 cd ~/django-nginx-lab &&
                 docker pull amanpushp/django-nginx-lab:latest &&
                 docker compose down &&
