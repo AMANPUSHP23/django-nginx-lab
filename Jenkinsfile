@@ -63,15 +63,24 @@ stages {
         steps {
             sshagent(['app-server-ssh']) {
                 sh '''
-                ssh -o StrictHostKeyChecking=no ubuntu@54.161.3.14 "
-                kubectl rollout restart deployment django-deployment &&
-                kubectl rollout status deployment django-deployment
+                ssh -o StrictHostKeyChecking=no ubuntu@172.31.25.141 "
+                kubectl rollout restart deployment/django-deployment &&
+                kubectl rollout status deployment/django-deployment
                 "
                 '''
             }
         }
     }
 
+}
+
+post {
+    success {
+        echo 'CI/CD Pipeline Completed Successfully!'
+    }
+    failure {
+        echo 'Pipeline Failed!'
+    }
 }
 
 
