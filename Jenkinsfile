@@ -49,10 +49,13 @@ stages {
             sh '''
             export AWS_PAGER=""
             export KUBECONFIG=/var/jenkins_home/.kube/config
-
             kubectl get nodes
-
-            kubectl apply -f k8s/
+            kubectl apply -f k8s/configmap.yaml
+            kubectl apply -f k8s/secret.yaml
+            kubectl apply -f k8s/django-deployment.yaml
+            kubectl apply -f k8s/django-service.yaml
+            kubectl apply -f k8s/ingress.yaml
+            
 
             kubectl rollout restart deployment/django-deployment
 
