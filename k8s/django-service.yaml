@@ -9,7 +9,7 @@ spec:
   selector:
     app: django
 
-  type: NodePort
+  type: LoadBalancer
 
   ports:
 

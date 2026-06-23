@@ -31,6 +31,11 @@ spec:
               name: django-config
               key: DB_NAME
 
+
+        - name: PGDATA
+          value: /var/lib/postgresql/data/pgdata
+
+
         - name: POSTGRES_PASSWORD
           valueFrom:
             secretKeyRef:
@@ -48,7 +53,7 @@ spec:
     spec:
       accessModes:
       - ReadWriteOnce
-
+      storageClassName: gp2
       resources:
         requests:
           storage: 1Gi
