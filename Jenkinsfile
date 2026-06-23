@@ -44,40 +44,29 @@ stages {
         }
     }
 
-    stage('Deploy to App Server') {
+    stage('Deploy to EKS') {
         steps {
-            sshagent(['app-server-ssh']) {
-                sh '''
-                ssh -o StrictHostKeyChecking=no ubuntu@44.211.213.198 "
-                cd ~/django-nginx-lab &&
-                docker pull amanpushp/django-nginx-lab:latest &&
-                docker compose down &&
-                docker compose up -d
-                "
-                '''
-            }
+            sh '''
+            export AWS_PAGER=""
+            export KUBECONFIG=/var/jenkins_home/.kube/config
+
+            kubectl get nodes
+
+            kubectl apply -f k8s/
+
+            kubectl rollout restart deployment/django-deployment
+
+            kubectl rollout status deployment/django-deployment --timeout=300s
+            '''
         }
     }
-
-    stage('Deploy to Kubernetes') {
-        steps {
-            sshagent(['app-server-ssh']) {
-                sh '''
-                ssh -o StrictHostKeyChecking=no ubuntu@172.31.25.141 "
-                kubectl rollout restart deployment/django-deployment &&
-                kubectl rollout status deployment/django-deployment
-                "
-                '''
-            }
-        }
-    }
-
 }
 
 post {
     success {
         echo 'CI/CD Pipeline Completed Successfully!'
     }
+
     failure {
         echo 'Pipeline Failed!'
     }
